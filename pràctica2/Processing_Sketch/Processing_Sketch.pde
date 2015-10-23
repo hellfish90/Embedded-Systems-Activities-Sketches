@@ -5,6 +5,7 @@ Serial myport;
 int _colorR=255;
 int _colorG=255;
 int _colorB=255;
+int temperature;
 
 void setup(){
   size(200,200);
@@ -19,8 +20,8 @@ void draw(){
   background(0);
   fill(_colorR,_colorG,_colorB);
   ellipse(readings[0],readings[1],30,40);
-  if(readings[2]==0)
-    changeColor();
+  temperature = readings[2];
+  changeColorByTemperature(temperature);
 }
 
 void serialEvent(Serial s){
@@ -28,8 +29,24 @@ void serialEvent(Serial s){
   redraw=true;
 }
 
-void changeColor(){
-  _colorR=int(random(255));
-  _colorG=int(random(255));
-  _colorB=int(random(255));
+void changeColorByTemperature(int temperature){
+  int colored = convertTempToColor(temperature);
+  _colorR=int(colored);
+  _colorG=int(0);
+  _colorB=int(255-colored);
+}
+
+int convertTempToColor(int temperature){
+  if(temperature == 26)
+    return 0;
+  if(temperature == 27)
+    return 63;
+  if(temperature == 28)
+    return 127;
+  if(temperature == 29)
+    return 190;
+  if(temperature == 30)
+    return 255;
+  else
+    return 0;
 }
